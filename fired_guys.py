@@ -1,7 +1,8 @@
+import argparse
 import os
-import json
 import requests
 import datetime
+
 
 def run(count=5):
     SLACK_TOKEN = os.getenv('SLACK_TOKEN')
@@ -15,4 +16,12 @@ def run(count=5):
 
 
 if __name__ == '__main__':
-    run()
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        '--count',
+        help='Number of most recent fired guys to print',
+        default=5,
+    )
+    args = parser.parse_args()
+    count = int(args.count)
+    run(count)
