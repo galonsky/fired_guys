@@ -47,5 +47,5 @@ if __name__ == '__main__':
     )
     args = parser.parse_args()
     count = int(args.count)
-    slack_id = str(args.slack_id)
+    slack_id = args.slack_id
     run(count, slack_id)
