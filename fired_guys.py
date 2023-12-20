@@ -15,12 +15,23 @@ def get_cohorts(members, display_name, count):
     return []
 
 
+def _is_member_deactivated(member: dict) -> bool:
+    if not member["deleted"]:
+        return False
+
+    if "enterprise_user" in member:
+        # some users are showing as deleted in the API response, but it seems like they're
+        # still active if they have teams under enterprise_user
+        return not member["enterprise_user"]["teams"]
+    return True
+
+
 def run(count=5, slack_id=None):
     SLACK_TOKEN = os.getenv('SLACK_TOKEN')
     r = requests.get('https://slack.com/api/users.list?token={}'.format(SLACK_TOKEN))
     response_dict = r.json()
     members = response_dict['members']
-    deleted = [member for member in members if member['deleted']]
+    deleted = [member for member in members if _is_member_deactivated(member)]
     deleted.sort(key=lambda member: member['updated'])
     for i in range(-count, 0):
         print('{} - updated at {}'.format(deleted[i]['profile']['real_name'], datetime.datetime.fromtimestamp(deleted[i]['updated'])))
