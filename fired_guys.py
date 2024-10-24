@@ -33,7 +33,7 @@ def run(count=5, slack_id=None):
     members = response_dict['members']
     deleted = [member for member in members if _is_member_deactivated(member)]
     deleted.sort(key=lambda member: member['updated'])
-    for i in range(-count, 0):
+    for i in range(-min(count, len(deleted)), 0):
         print('{} - updated at {}'.format(deleted[i]['profile']['real_name'], datetime.datetime.fromtimestamp(deleted[i]['updated'])))
 
     if slack_id:
